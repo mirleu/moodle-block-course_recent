@@ -14,7 +14,7 @@
 /**
  * Global block settings definition.
  *
- * @package   blocks-course_recent
+ * @package   block_course_recent
  * @copyright &copy; 2014 The Regents of the University of California
  *            2010 Remote Learner - http://www.remote-learner.net/
  * @author    Carson Tam <carson.tam@ucsf.edu>, Akin Delamarre <adelamarre@remote-learner.net>
@@ -24,7 +24,7 @@
 
 require_once($CFG->dirroot.'/blocks/course_recent/lib.php');
 
-$choices = array();
+$choices = [];
 
 for ($i = LOWER_LIMIT; $i <= UPPER_LIMIT; $i++) {
     $choices[$i] = $i;

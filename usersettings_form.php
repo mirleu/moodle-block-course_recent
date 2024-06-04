@@ -14,7 +14,7 @@
 /**
  * Definition of the form for user instance configuration settings.
  *
- * @package   blocks-course_recent
+ * @package   block_course_recent
  * @copyright &copy; 2014 The Regents of the University of California
  *            2010 Remote Learner - http://www.remote-learner.net/
  * @author    Carson Tam <carson.tam@ucsf.edu>, Akin Delamarre <adelamarre@remote-learner.net>
@@ -31,7 +31,7 @@ class usersettings_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $choices = array();
+        $choices = [];
 
         for ($i = 1; $i <= 10; $i++) {
             $choices[$i] = $i;
@@ -43,11 +43,11 @@ class usersettings_form extends moodleform {
         $mform->setType('userlimit', PARAM_INT);
 
         $mform->addElement('hidden', 'userid');
-	$mform->setType('userid', PARAM_INT);
+        $mform->setType('userid', PARAM_INT);
         $mform->addElement('hidden', 'id');
-	$mform->setType('id', PARAM_INT);
+        $mform->setType('id', PARAM_INT);
         $mform->addElement('hidden', 'courseid');
-	$mform->setType('courseid', PARAM_INT);
+        $mform->setType('courseid', PARAM_INT);
 
         $this->add_action_buttons(true);
     }
@@ -59,7 +59,7 @@ class usersettings_form extends moodleform {
 
         if (LOWER_LIMIT > $data['userlimit']) {
             $errors['userlimit'] = get_string('error1', 'block_course_recent');
-        } elseif (UPPER_LIMIT < $data['userlimit']) {
+        } else if (UPPER_LIMIT < $data['userlimit']) {
             $errors['userlimit'] = get_string('error2', 'block_course_recent');
         }
 

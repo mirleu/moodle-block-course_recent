@@ -14,7 +14,7 @@
 /**
  * Recent courses block main class.
  *
- * @package   blocks-course_recent
+ * @package   block_course_recent
  * @copyright 2010 Remote Learner - http://www.remote-learner.net/
  * @author    Akin Delamarre <adelamarre@remote-learner.net>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -31,20 +31,20 @@ class block_course_recent extends block_list {
     function get_content() {
         global $CFG, $DB, $USER, $COURSE, $OUTPUT;
 
-        if ($this->content !== NULL) {
-          return $this->content;
+        if ($this->content !== null) {
+            return $this->content;
         }
 
-        $this->content         =  new stdClass;
-        $this->content->items  = array();
-        $this->content->icons  = array();
+        $this->content         = new stdClass;
+        $this->content->items  = [];
+        $this->content->icons  = [];
         $this->content->footer = '';
 
         if (!isloggedin() or isguestuser()) {
             return $this->content;
         }
 
-        //$context = get_context_instance(CONTEXT_BLOCK, $this->instance->id);
+        // $context = get_context_instance(CONTEXT_BLOCK, $this->instance->id);
         $context = context_block::instance($this->instance->id);
 
         if (has_capability('block/course_recent:changelimit', $context, $USER->id)) {
@@ -55,7 +55,7 @@ class block_course_recent extends block_list {
 
         $maximum = isset($CFG->block_course_recent_default) ? $CFG->block_course_recent_default : DEFAULT_MAX;
 
-        $userlimit = $DB->get_field('block_course_recent', 'userlimit', array('userid' => $USER->id));
+        $userlimit = $DB->get_field('block_course_recent', 'userlimit', ['userid' => $USER->id]);
 
         // Override the global setting if the user limit is set
         if (!empty($userlimit)) {
@@ -65,7 +65,7 @@ class block_course_recent extends block_list {
         // Make sure the maximum record number is within the acceptible range.
         if (LOWER_LIMIT > $maximum) {
             $maximum = LOWER_LIMIT;
-        } elseif (UPPER_LIMIT < $maximum) {
+        } else if (UPPER_LIMIT < $maximum) {
             $maximum = UPPER_LIMIT;
         }
 
@@ -73,14 +73,14 @@ class block_course_recent extends block_list {
         $checkrole = !empty($CFG->block_course_recent_musthaverole);
 
         if (has_capability('block/course_recent:showall', $context, $USER->id)) {
-          $checkrole = false;
+            $checkrole = false;
         }
 
         $showhidden = true;
 
-        $three_months_ago = strtotime('-3 months');
+        $threemonthsago = strtotime('-3 months');
 
-        $query_params = array();
+        $queryparams = [];
 
         // Get a list of all courses that have been viewed by the user.
         if (!$checkrole) {
@@ -100,9 +100,9 @@ class block_course_recent extends block_list {
                     GROUP BY l.courseid
                     ORDER BY max(l.timecreated) DESC";
 
-            $query_params[] = $USER->id;
-            $query_params[] = CONTEXT_COURSE;
-            $query_params[] = $three_months_ago;
+            $queryparams[] = $USER->id;
+            $queryparams[] = CONTEXT_COURSE;
+            $queryparams[] = $threemonthsago;
         } else {
             // The following SQL will ensure that the user has a current role assignment within the course.
             // Note: make sure the query utilizes this key, `mdl_logsstanlog_useconconcr_ix`
@@ -124,12 +124,12 @@ class block_course_recent extends block_list {
                     GROUP BY l.courseid
                     ORDER BY max(l.timecreated) DESC";
 
-            $query_params[] = $USER->id;
-            $query_params[] = CONTEXT_COURSE;
-            $query_params[] = $three_months_ago;
-         }
+            $queryparams[] = $USER->id;
+            $queryparams[] = CONTEXT_COURSE;
+            $queryparams[] = $threemonthsago;
+        }
 
-        $records = $DB->get_recordset_sql($sql, $query_params, 0, $maximum);
+        $records = $DB->get_recordset_sql($sql, $queryparams, 0, $maximum);
 
         if (!$records->valid()) {
 
@@ -143,7 +143,7 @@ class block_course_recent extends block_list {
         // Create links for each course that was viewed by the user
         foreach ($records as $record) {
 
-            //$context = get_context_instance(CONTEXT_COURSE, $record->course);
+            // $context = get_context_instance(CONTEXT_COURSE, $record->course);
             $context = context_course::instance($record->courseid);
             $showhidden = has_capability('moodle/course:viewhiddencourses', $context, $USER->id);
 
@@ -186,11 +186,11 @@ class block_course_recent extends block_list {
      * @return array page-type prefix => true/false.
      */
     function applicable_formats() {
-      return array('all' => true);
+        return ['all' => true];
     }
 
 
     public function instance_allow_multiple() {
-      return false;
+        return false;
     }
 }

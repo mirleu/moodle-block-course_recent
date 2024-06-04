@@ -14,7 +14,7 @@
 /**
  * Library file containing API functions and defined constants.
  *
- * @package   blocks-course_recent
+ * @package   block_course_recent
  * @copyright &copy; 2014 The Regents of the University of California
  *            2010 Remote Learner - http://www.remote-learner.net/
  * @author    Carson Tam <carson.tam@ucsf.edu>, Akin Delamarre <adelamarre@remote-learner.net>

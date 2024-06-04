@@ -15,7 +15,7 @@
 /**
  * Strings for component 'block-course_recent', language 'en'
  *
- * @package    block-course_recent
+ * @package    block_course_recent
  * @copyright  &copy; 2014 The Regents of the University of California
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

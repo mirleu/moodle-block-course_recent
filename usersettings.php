@@ -14,7 +14,7 @@
 /**
  * Display the page to handle user instance configuration settings.
  *
- * @package   blocks-course_recent
+ * @package   block_course_recent
  * @copyright &copy; 2014 The Regents of the University of California
  *            2010 Remote Learner - http://www.remote-learner.net/
  * @author    Carson Tam <carson.tam@ucsf.edu>, Akin Delamarre <adelamarre@remote-learner.net>
@@ -28,39 +28,39 @@ defined('MOODLE_INTERNAL') OR die('Direct access to this script is forbidden');
 
 $courseid = required_param('courseid', PARAM_INT);
 
-$PAGE->set_url('/blocks/course_recent/usersettings.php', array('courseid'=>$courseid));
+$PAGE->set_url('/blocks/course_recent/usersettings.php', ['courseid' => $courseid]);
 $PAGE->set_pagelayout('standard');
 
-if (!$course = $DB->get_record('course', array('id'=>$courseid))) {
+if (!$course = $DB->get_record('course', ['id' => $courseid])) {
     print_error("That's an invalid course id");
 }
 
 require_login($course);
 
-$usersetting_form = new usersettings_form();
+$usersettingform = new usersettings_form();
 
-$record = $DB->get_record('block_course_recent', array('userid' => $USER->id));
+$record = $DB->get_record('block_course_recent', ['userid' => $USER->id]);
 
 // Set the hidden form elements
 if (!empty($record)) {
-    $usersetting_form->set_data(array(
+    $usersettingform->set_data([
         'userid'    => $USER->id,
         'id'        => $record->id,
         'userlimit' => $record->userlimit,
-        'courseid'  => $courseid
-    ));
+        'courseid'  => $courseid,
+    ]);
 } else {
-    $usersetting_form->set_data(array(
+    $usersettingform->set_data([
         'userid'   => $USER->id,
         'id'       => 0,
-        'courseid' => $courseid
-    ));
+        'courseid' => $courseid,
+    ]);
 }
 
-if ($usersetting_form->is_cancelled()) {
+if ($usersettingform->is_cancelled()) {
     redirect($CFG->wwwroot.'/course/view.php?id='. $courseid);
 
-} else if ($data = $usersetting_form->get_data()) {
+} else if ($data = $usersettingform->get_data()) {
     if (!empty($data->id)) {
         $DB->update_record('block_course_recent', $data);
     } else {
@@ -71,8 +71,8 @@ if ($usersetting_form->is_cancelled()) {
 }
 
 if ($courseid && $courseid != SITEID) {
-    $shortname = $DB->get_field('course', 'shortname', array('id' => $courseid));
-    $PAGE->navbar->add(format_string($shortname), new moodle_url('/course/view.php', array('id'=>$courseid)));
+    $shortname = $DB->get_field('course', 'shortname', ['id' => $courseid]);
+    $PAGE->navbar->add(format_string($shortname), new moodle_url('/course/view.php', ['id' => $courseid]));
 }
 $PAGE->navbar->add(get_string('breadcrumb', 'block_course_recent'));
 
@@ -84,6 +84,6 @@ $PAGE->set_title($site->shortname . ': ' . get_string('block', 'moodle') . ': '
 $PAGE->set_heading($site->fullname);
 echo $OUTPUT->header();
 
-$usersetting_form->display();
+$usersettingform->display();
 
 echo $OUTPUT->footer();

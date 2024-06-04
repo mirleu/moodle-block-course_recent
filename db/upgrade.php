@@ -14,7 +14,7 @@
 /**
  * Database upgrade script.
  *
- * @package   blocks-course_recent
+ * @package   block_course_recent
  * @copyright &copy; 2014 The Regents of the University of California
  *            2010 Remote Learner - http://www.remote-learner.net/
  * @author    Carson Tam <carson.tam@ucsf.edu>, Justin Filip <jfilip@remote-learner.net>
@@ -31,7 +31,7 @@ function xmldb_block_course_recent_upgrade($oldversion = 0) {
         // Look for any duplicate records for a user and let's take the first one created to keep and delete the rest.
         if ($rs = $DB->get_recordset('block_course_recent', null, 'userid ASC, id ASC', 'id, userid')) {
             $curuserid = 0;
-            $deleteids = array();
+            $deleteids = [];
 
             foreach ($rs as $record) {
                 if ($record->userid != $curuserid) {
@@ -47,7 +47,7 @@ function xmldb_block_course_recent_upgrade($oldversion = 0) {
                 if (count($deleteids) > 1) {
                     $result = $result && $DB->delete_records_select('block_course_recent', 'id IN (' . implode(', ', $deleteids) . ')');
                 } else {
-                    $result = $result && $DB->delete_records('block_course_recent', array('id' => current($deleteids)));
+                    $result = $result && $DB->delete_records('block_course_recent', ['id' => current($deleteids)]);
                 }
             }
         }
