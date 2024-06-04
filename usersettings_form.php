@@ -1,4 +1,6 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -11,24 +13,39 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Definition of the form for user instance configuration settings.
  *
  * @package   block_course_recent
- * @copyright &copy; 2014 The Regents of the University of California
- *            2010 Remote Learner - http://www.remote-learner.net/
+ * @copyright 2014 The Regents of the University of California
+ * @copyright 2010 Remote Learner - http://www.remote-learner.net/
  * @author    Carson Tam <carson.tam@ucsf.edu>, Akin Delamarre <adelamarre@remote-learner.net>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 require_once('lib.php');
 
+/**
+ * Instance-specific block settings form.
+ *
+ * @package   block_course_recent
+ * @copyright 2014 The Regents of the University of California
+ * @copyright 2010 Remote Learner - http://www.remote-learner.net/
+ * @author    Carson Tam <carson.tam@ucsf.edu>, Akin Delamarre <adelamarre@remote-learner.net>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class usersettings_form extends moodleform {
-    function definition() {
-        global $USER, $CFG;
-
+    /**
+     * Form definition.
+     *
+     * @return void
+     * @throws coding_exception
+     */
+    protected function definition(): void {
         $mform =& $this->_form;
 
         $choices = [];
@@ -52,9 +69,15 @@ class usersettings_form extends moodleform {
         $this->add_action_buttons(true);
     }
 
-    function validation($data, $files) {
-        global $CFG;
-
+    /**
+     * Validates this form.
+     *
+     * @param array $data The submitted form data.
+     * @param array $files Files uploaded to this form.
+     * @return array A list of validation errors, or an empty array if validation passes.
+     * @throws coding_exception
+     */
+    public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
 
         if (LOWER_LIMIT > $data['userlimit']) {
@@ -64,6 +87,5 @@ class usersettings_form extends moodleform {
         }
 
         return $errors;
-
     }
 }

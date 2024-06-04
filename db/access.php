@@ -1,4 +1,6 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -11,12 +13,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Capability definitions.
  *
  * @package   block_course_recent
- * @copyright &copy; 2014 The Regents of the University of California
- *            2010 Remote Learner - http://www.remote-learner.net/
+ * @copyright 2014 The Regents of the University of California
+ * @copyright 2010 Remote Learner - http://www.remote-learner.net/
  * @author    Carson Tam <carson.tam@ucsf.edu>, Akin Delamarre <adelamarre@remote-learner.net>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
