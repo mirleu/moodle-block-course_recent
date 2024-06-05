@@ -1,4 +1,6 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -11,40 +13,61 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * Recent courses block main class.
+ * The recent courses block.
  *
- * @package   blocks-course_recent
+ * @package   block_course_recent
  * @copyright 2010 Remote Learner - http://www.remote-learner.net/
  * @author    Akin Delamarre <adelamarre@remote-learner.net>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/blocks/course_recent/lib.php');
 
+/**
+ * Recent courses block class.
+ *
+ * @package    block_course_recent
+ * @copyright  The Regents of the University of California
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class block_course_recent extends block_list {
-    function init() {
-        $this->title   = get_string('course_recent', 'block_course_recent');
+    /**
+     * Initializes block.
+     *
+     * @return void
+     * @throws coding_exception
+     */
+    public function init(): void {
+        $this->title = get_string('course_recent', 'block_course_recent');
     }
 
-    function get_content() {
+    /**
+     * Retrieves block content.
+     *
+     * @return stdClass The content object.
+     * @throws coding_exception
+     * @throws dml_exception
+     */
+    public function get_content(): stdClass {
         global $CFG, $DB, $USER, $COURSE, $OUTPUT;
 
-        if ($this->content !== NULL) {
-          return $this->content;
-        }
-
-        $this->content         =  new stdClass;
-        $this->content->items  = array();
-        $this->content->icons  = array();
-        $this->content->footer = '';
-
-        if (!isloggedin() or isguestuser()) {
+        if ($this->content !== null) {
             return $this->content;
         }
 
-        //$context = get_context_instance(CONTEXT_BLOCK, $this->instance->id);
+        $this->content         = new stdClass();
+        $this->content->items  = [];
+        $this->content->icons  = [];
+        $this->content->footer = '';
+
+        if (!isloggedin() || isguestuser()) {
+            return $this->content;
+        }
+
         $context = context_block::instance($this->instance->id);
 
         if (has_capability('block/course_recent:changelimit', $context, $USER->id)) {
@@ -55,9 +78,9 @@ class block_course_recent extends block_list {
 
         $maximum = isset($CFG->block_course_recent_default) ? $CFG->block_course_recent_default : DEFAULT_MAX;
 
-        $userlimit = $DB->get_field('block_course_recent', 'userlimit', array('userid' => $USER->id));
+        $userlimit = $DB->get_field('block_course_recent', 'userlimit', ['userid' => $USER->id]);
 
-        // Override the global setting if the user limit is set
+        // Override the global setting if the user limit is set.
         if (!empty($userlimit)) {
             $maximum = $userlimit;
         }
@@ -65,22 +88,22 @@ class block_course_recent extends block_list {
         // Make sure the maximum record number is within the acceptible range.
         if (LOWER_LIMIT > $maximum) {
             $maximum = LOWER_LIMIT;
-        } elseif (UPPER_LIMIT < $maximum) {
+        } else if (UPPER_LIMIT < $maximum) {
             $maximum = UPPER_LIMIT;
         }
 
-        // Set flag to check user's role on the course
+        // Set flag to check user's role on the course.
         $checkrole = !empty($CFG->block_course_recent_musthaverole);
 
         if (has_capability('block/course_recent:showall', $context, $USER->id)) {
-          $checkrole = false;
+            $checkrole = false;
         }
 
         $showhidden = true;
 
-        $three_months_ago = strtotime('-3 months');
+        $threemonthsago = strtotime('-3 months');
 
-        $query_params = array();
+        $queryparams = [];
 
         // Get a list of all courses that have been viewed by the user.
         if (!$checkrole) {
@@ -100,9 +123,9 @@ class block_course_recent extends block_list {
                     GROUP BY l.courseid
                     ORDER BY max(l.timecreated) DESC";
 
-            $query_params[] = $USER->id;
-            $query_params[] = CONTEXT_COURSE;
-            $query_params[] = $three_months_ago;
+            $queryparams[] = $USER->id;
+            $queryparams[] = CONTEXT_COURSE;
+            $queryparams[] = $threemonthsago;
         } else {
             // The following SQL will ensure that the user has a current role assignment within the course.
             // Note: make sure the query utilizes this key, `mdl_logsstanlog_useconconcr_ix`
@@ -124,12 +147,12 @@ class block_course_recent extends block_list {
                     GROUP BY l.courseid
                     ORDER BY max(l.timecreated) DESC";
 
-            $query_params[] = $USER->id;
-            $query_params[] = CONTEXT_COURSE;
-            $query_params[] = $three_months_ago;
-         }
+            $queryparams[] = $USER->id;
+            $queryparams[] = CONTEXT_COURSE;
+            $queryparams[] = $threemonthsago;
+        }
 
-        $records = $DB->get_recordset_sql($sql, $query_params, 0, $maximum);
+        $records = $DB->get_recordset_sql($sql, $queryparams, 0, $maximum);
 
         if (!$records->valid()) {
 
@@ -140,25 +163,24 @@ class block_course_recent extends block_list {
 
         $icon  = $OUTPUT->pix_icon('i/course_recent', get_string('coursecategory'), 'block_course_recent');
 
-        // Create links for each course that was viewed by the user
+        // Create links for each course that was viewed by the user.
         foreach ($records as $record) {
 
-            //$context = get_context_instance(CONTEXT_COURSE, $record->course);
             $context = context_course::instance($record->courseid);
             $showhidden = has_capability('moodle/course:viewhiddencourses', $context, $USER->id);
 
             // Check the 'view participants' capability if the block has the
             // 'most have role in course' is turned off.  We need this because
-            // Users may have roles outside of the course context
+            // Users may have roles outside the course context.
             if (!$checkrole) {
                 $showcourse = has_capability('moodle/course:viewparticipants', $context, $USER->id);
             } else {
                 $showcourse = true;
             }
 
-            if ($showcourse or (isset($record->guest) and !empty($record->guest))) {
+            if ($showcourse || (isset($record->guest) && !empty($record->guest))) {
 
-                if ($showhidden and !$record->visible) {
+                if ($showhidden && !$record->visible) {
                     $this->content->items[] = '<a class="' . 'dimmed' . '" title="' . $record->shortname . '" href="'.
                                               $CFG->wwwroot .'/course/view.php?id=' . $record->courseid . '">' . $icon .
                                               $record->fullname . '</a>';
@@ -176,21 +198,29 @@ class block_course_recent extends block_list {
         return $this->content;
     }
 
-    function has_config() {
+    /**
+     * Indicates if this block has its own settings form or not.
+     * @return bool Always TRUE.
+     */
+    public function has_config(): bool {
         return true;
     }
 
     /**
-     * Which page types this block may appear on.
+     * Returns a list of page types that this block may appear on.
      *
-     * @return array page-type prefix => true/false.
+     * @return array The page types.
      */
-    function applicable_formats() {
-      return array('all' => true);
+    public function applicable_formats(): array {
+        return ['all' => true];
     }
 
-
-    public function instance_allow_multiple() {
-      return false;
+    /**
+     * Checks if multiple instances of this block are allowed.
+     *
+     * @return bool Always FALSE.
+     */
+    public function instance_allow_multiple(): bool {
+        return false;
     }
 }
