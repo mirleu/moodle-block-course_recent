@@ -217,7 +217,7 @@ class provider_test extends provider_testcase {
 
         // Confirm that only user1's block data got deleted.
         $result = $DB->count_records('block_course_recent', ['userid' => $user1->id]);
-        $this->assertEmpty($result);
+        $this->assertEquals(0, $result);
         $result = $DB->count_records('block_course_recent', ['userid' => $user2->id]);
         $this->assertEquals(1, $result);
     }
@@ -248,6 +248,7 @@ class provider_test extends provider_testcase {
 
         // Create two users.
         $user1 = $generator->create_user();
+        $usercontext1 = context_user::instance($user1->id);
         $user2 = $generator->create_user();
 
         // Apply user-specific block config.
@@ -271,7 +272,7 @@ class provider_test extends provider_testcase {
         $this->assertEquals(1, $result);
 
         // Attempt to delete user1 data in user2 user context (should have no effect).
-        $approvedlist = new approved_contextlist($user2, $component, [$user1->id]);
+        $approvedlist = new approved_contextlist($user2, $component, [$usercontext1->id]);
         provider::delete_data_for_user($approvedlist);
 
         // Confirm that user data is still there.
@@ -280,8 +281,8 @@ class provider_test extends provider_testcase {
         $result = $DB->count_records('block_course_recent', ['userid' => $user2->id]);
         $this->assertEquals(1, $result);
 
-        // Delete teacher data in their own user context.
-        $approvedlist = new approved_contextlist($user1, $component, [$user1->id]);
+        // Delete user1 data in their own user context.
+        $approvedlist = new approved_contextlist($user1, $component, [$usercontext1->id]);
         provider::delete_data_for_user($approvedlist);
 
         // Confirm that only user2 user data is still there.
@@ -352,7 +353,7 @@ class provider_test extends provider_testcase {
         $this->assertEquals(1, $result);
 
         // Attempt to delete data in another user's context (should have no effect).
-        $approvedlist = new approved_userlist($usercontext1, $component, [$user1->id]);
+        $approvedlist = new approved_userlist($usercontext1, $component, [$user2->id]);
         provider::delete_data_for_users($approvedlist);
 
         // Confirm that user data is still there.
@@ -363,7 +364,7 @@ class provider_test extends provider_testcase {
         $result = $DB->count_records('block_course_recent', ['userid' => $user3->id]);
         $this->assertEquals(1, $result);
 
-        // Delete user1's data in user2's context.
+        // Delete data for user1 and user2 in the user context for user1.
         $approvedlist = new approved_userlist($usercontext1, $component, [$user1->id, $user2->id]);
         provider::delete_data_for_users($approvedlist);
 
