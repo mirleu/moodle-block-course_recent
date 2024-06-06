@@ -199,14 +199,10 @@ EOD;
      * @throws dml_exception
      */
     public static function delete_data_for_users(approved_userlist $userlist): void {
-        $users = $userlist->get_users();
-        foreach ($users as $user) {
-            $contextlist = new approved_contextlist(
-                $user,
-                'block_course_recent',
-                [context_user::instance($user->id)->id]
-            );
-            self::delete_data_for_user($contextlist);
+        global $DB;
+        $context = $userlist->get_context();
+        if ($context instanceof context_user && in_array($context->instanceid, $userlist->get_userids())) {
+            $DB->delete_records('block_course_recent', ['userid' => $context->instanceid]);
         }
     }
 }
