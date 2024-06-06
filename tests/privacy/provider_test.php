@@ -282,7 +282,7 @@ final class provider_test extends provider_testcase {
      * Test deleting data within a context for an approved userlist.
      * @throws dml_exception
      */
-    public function test_delete_data_for_users() {
+    public function test_delete_data_for_users(): void {
         global $DB;
 
         $this->resetAfterTest();
