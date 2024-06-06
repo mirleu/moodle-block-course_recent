@@ -143,7 +143,6 @@ final class provider_test extends provider_testcase {
      * Test exporting data for an approved contextlist.
      * @throws coding_exception
      * @throws dml_exception
-     * @throws dml_exception
      */
     public function test_export_user_data(): void {
         global $DB;
@@ -225,19 +224,6 @@ final class provider_test extends provider_testcase {
     /**
      * Test deleting data within an approved contextlist for a user.
      * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
      */
     public function test_delete_data_for_user(): void {
         global $DB;
@@ -294,24 +280,6 @@ final class provider_test extends provider_testcase {
 
     /**
      * Test deleting data within a context for an approved userlist.
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
-     * @throws dml_exception
      * @throws dml_exception
      */
     public function test_delete_data_for_users() {
