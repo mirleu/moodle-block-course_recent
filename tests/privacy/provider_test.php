@@ -42,13 +42,13 @@ use dml_exception;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \block_course_recent\privacy\provider
  */
-class provider_test extends provider_testcase {
+final class provider_test extends provider_testcase {
 
     /**
      * Test getting the context for the user ID related to this plugin.
      * @throws dml_exception
      */
-    public function test_get_contexts_for_userid() {
+    public function test_get_contexts_for_userid(): void {
         global $DB;
         $this->resetAfterTest();
         $generator = $this->getDataGenerator();
@@ -83,7 +83,7 @@ class provider_test extends provider_testcase {
      * Test getting users in the context ID related to this plugin.
      * @throws dml_exception
      */
-    public function test_get_users_in_context() {
+    public function test_get_users_in_context(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -123,7 +123,7 @@ class provider_test extends provider_testcase {
     /**
      * Test fetching information about user data stored.
      */
-    public function test_get_metadata() {
+    public function test_get_metadata(): void {
         $collection = new collection('block_course_recent');
         $newcollection = provider::get_metadata($collection);
         $itemcollection = $newcollection->get_collection();
@@ -145,7 +145,7 @@ class provider_test extends provider_testcase {
      * @throws dml_exception
      * @throws dml_exception
      */
-    public function test_export_user_data() {
+    public function test_export_user_data(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -182,7 +182,7 @@ class provider_test extends provider_testcase {
      * Test deleting data for all users within an approved contextlist.
      * @throws dml_exception
      */
-    public function test_delete_data_for_all_users_in_context() {
+    public function test_delete_data_for_all_users_in_context(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -239,7 +239,7 @@ class provider_test extends provider_testcase {
      * @throws dml_exception
      * @throws dml_exception
      */
-    public function test_delete_data_for_user() {
+    public function test_delete_data_for_user(): void {
         global $DB;
 
         $this->resetAfterTest();
